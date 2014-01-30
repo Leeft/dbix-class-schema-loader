@@ -105,6 +105,7 @@ __PACKAGE__->mk_group_accessors('simple', qw/
                                 result_components_map
                                 result_roles_map
                                 datetime_undef_if_invalid
+                                mysql_character_set_info
                                 _result_class_methods
                                 naming_set
                                 filter_generated_code
@@ -901,6 +902,13 @@ TIMESTAMP columns.
 
 The default is recommended to deal with data such as C<00/00/00> which
 sometimes ends up in such columns in MySQL.
+
+=head2 mysql_character_set_info
+
+Pass a C<1> for this option when using MySQL if you want C<< extra => {
+mysql_charset => '...', mysql_collate => '...' } >> to be included for any
+TEXT or CHAR columns. These fields help restoring the proper column character
+set when generating SQL.
 
 =head2 config_file
 

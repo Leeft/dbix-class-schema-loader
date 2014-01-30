@@ -315,6 +315,19 @@ sub _extra_column_info {
         my $current_timestamp = 'current_timestamp';
         $extra_info{default_value} = \$current_timestamp;
     }
+    if (defined $self->mysql_character_set_info && $self->mysql_character_set_info == 1 && $info->{data_type} =~ /char|text/i) {
+        my ( $character_set_name, $collation_name ) = try {
+            $self->dbh->selectrow_array( qq{
+               SELECT character_set_name, collation_name
+               FROM information_schema.columns
+               WHERE table_name = ? AND column_name = ?
+            }, {}, $table->name, $col );
+        };
+        if ( not $@ ) {
+            $extra_info{extra}{mysql_collate} = $collation_name;
+            $extra_info{extra}{mysql_charset} = $character_set_name;
+        }
+    }
 
     return \%extra_info;
 }
